@@ -14,14 +14,14 @@ async function init() {
 
     app.use(bodyParser.json());
 
-    app.use("/api", router);
-
     app.get("/", (req, res) => {
       res.status(200).json({
         message: "Server is running now",
         data: null,
       });
     });
+
+    app.use("/api", router);
 
     app.listen(PORT, () => {
       console.log(`Server is running on http://localhost:${PORT}`);
