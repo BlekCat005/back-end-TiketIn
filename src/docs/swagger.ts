@@ -28,6 +28,9 @@ const doc = {
         identifier: "rizki",
         password: "abc12345",
       },
+      ActivationRequest: {
+        code: "abcdef",
+      },
     },
   },
 };
