@@ -81,7 +81,7 @@ export default {
     try {
       const { id } = req.params;
 
-      const result = await CategoryModel.findByIdAndDelete(id);
+      const result = await CategoryModel.findByIdAndDelete(id, { new: true });
 
       response.success(res, result, "success deleted category");
     } catch (error) {
