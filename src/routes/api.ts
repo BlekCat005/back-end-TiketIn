@@ -39,7 +39,7 @@ router.get(
   #swagger.tags = ["Category"]
   */
 );
-router.post(
+router.get(
   "/category/:id",
   categoryController.findOne
   /*

@@ -14,7 +14,7 @@ export default {
         req.file as Express.Multer.File
       );
       response.success(res, result, "File uploaded successfully");
-    } catch {
+    } catch (error) {
       response.error(res, null, "File upload failed");
     }
   },
