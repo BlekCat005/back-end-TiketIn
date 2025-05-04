@@ -711,11 +711,11 @@
         "properties": {
           "identifier": {
             "type": "string",
-            "example": "rizki"
+            "example": "rizki2025category3"
           },
           "password": {
             "type": "string",
-            "example": "abc12345"
+            "example": "abcde2025"
           }
         },
         "xml": {
@@ -797,6 +797,10 @@
                 "items": {
                   "type": "number"
                 }
+              },
+              "address": {
+                "type": "string",
+                "example": ""
               }
             }
           },
@@ -805,6 +809,10 @@
             "example": false
           },
           "isFeatured": {
+            "type": "boolean",
+            "example": false
+          },
+          "isPublish": {
             "type": "boolean",
             "example": false
           }

@@ -25,8 +25,8 @@ const doc = {
     },
     schemas: {
       LoginRequest: {
-        identifier: "rizki",
-        password: "abc12345",
+        identifier: "rizki2025category3",
+        password: "abcde2025",
       },
       ActivationRequest: {
         code: "abcdef",
@@ -46,9 +46,11 @@ const doc = {
         location: {
           region: "region id",
           coordinates: [0, 0],
+          address: "",
         },
         isOnline: false,
         isFeatured: false,
+        isPublish: false,
       },
       RemoveMediaRequest: {
         fileUrl: "",

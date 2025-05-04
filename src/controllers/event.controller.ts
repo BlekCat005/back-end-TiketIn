@@ -10,7 +10,7 @@ export default {
       const payload = { ...req.body, createdBy: req.user?.id } as TEvent;
 
       await eventDAO.validate(payload);
-      const result = EventModel.create(payload);
+      const result = await EventModel.create(payload);
       response.success(res, result, "success to create event");
     } catch (error) {
       response.error(res, error, "failed to create event");
