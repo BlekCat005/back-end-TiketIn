@@ -1,16 +1,17 @@
 import { Response } from "express";
 import { IPaginationQuery, IReqUser } from "../utils/interfaces";
-import response from "../utils/response";
 import CategoryModel, { categoryDAO } from "../models/category.model";
+import response from "../utils/response";
+import { isValidObjectId } from "mongoose";
 
 export default {
   async create(req: IReqUser, res: Response) {
     try {
       await categoryDAO.validate(req.body);
       const result = await CategoryModel.create(req.body);
-      response.success(res, result, "success to create category");
+      response.success(res, result, "success create a category");
     } catch (error) {
-      response.error(res, error, "failed to create category");
+      response.error(res, error, "failed create category");
     }
   },
   async findAll(req: IReqUser, res: Response) {
@@ -25,8 +26,12 @@ export default {
       if (search) {
         Object.assign(query, {
           $or: [
-            { name: { $regex: search, $options: "i" } },
-            { description: { $regex: search, $options: "i" } },
+            {
+              name: { $regex: search, $options: "i" },
+            },
+            {
+              description: { $regex: search, $options: "i" },
+            },
           ],
         });
       }
@@ -50,42 +55,56 @@ export default {
         "success find all category"
       );
     } catch (error) {
-      response.error(res, error, "failed to find all category");
+      response.error(res, error, "failed find all category");
     }
   },
   async findOne(req: IReqUser, res: Response) {
     try {
       const { id } = req.params;
 
+      if (!isValidObjectId(id)) {
+        return response.notFound(res, "failed find one a ticket");
+      }
+
       const result = await CategoryModel.findById(id);
+
+      if (!result) {
+        return response.notFound(res, "failed find one a category");
+      }
 
       response.success(res, result, "success find one category");
     } catch (error) {
-      response.error(res, error, "failed to find one category");
+      response.error(res, error, "failed find one category");
     }
   },
   async update(req: IReqUser, res: Response) {
     try {
       const { id } = req.params;
 
+      if (!isValidObjectId(id)) {
+        return response.notFound(res, "failed update a category");
+      }
+
       const result = await CategoryModel.findByIdAndUpdate(id, req.body, {
         new: true,
       });
-
-      response.success(res, result, "success updated category");
+      response.success(res, result, "success update category");
     } catch (error) {
-      response.error(res, error, "failed to update category");
+      response.error(res, error, "failed update category");
     }
   },
   async remove(req: IReqUser, res: Response) {
     try {
       const { id } = req.params;
 
-      const result = await CategoryModel.findByIdAndDelete(id, { new: true });
+      if (!isValidObjectId(id)) {
+        return response.notFound(res, "failed remove a category");
+      }
 
-      response.success(res, result, "success deleted category");
+      const result = await CategoryModel.findByIdAndDelete(id, { new: true });
+      response.success(res, result, "success remove category");
     } catch (error) {
-      response.error(res, error, "failed to remove category");
+      response.error(res, error, "failed remove category");
     }
   },
 };
