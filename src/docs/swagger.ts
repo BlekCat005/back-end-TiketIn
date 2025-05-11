@@ -3,17 +3,17 @@ import swaggerAutogen from "swagger-autogen";
 const doc = {
   info: {
     version: "v0.0.1",
-    title: "Dokumentasi API Acara",
-    description: "Dokumentasi API Acara",
+    title: "Dokumentasi API ACARA",
+    description: "Dokumentasi API ACARA",
   },
   servers: [
     {
       url: "http://localhost:3000/api",
-      description: "Local server",
+      description: "Local Server",
     },
     {
-      url: "https://back-end-acara-jet-eight.vercel.app/api",
-      description: "Deployed server",
+      url: "https://back-end-acara.vercel.app/api",
+      description: "Deploy Server",
     },
   ],
   components: {
@@ -25,11 +25,27 @@ const doc = {
     },
     schemas: {
       LoginRequest: {
-        identifier: "rizki2025category3",
-        password: "abcde2025",
+        identifier: "agung2025",
+        password: "Agung2025!",
+      },
+      RegisterRequest: {
+        fullName: "member2025",
+        username: "member2025",
+        email: "member2025@yopmail.com",
+        password: "Member2025!",
+        confirmPassword: "Member2025!",
       },
       ActivationRequest: {
         code: "abcdef",
+      },
+      UpdateProfileRequest: {
+        fullName: "",
+        profilePicture: "",
+      },
+      UpdatePasswordRequest: {
+        oldPassword: "",
+        password: "",
+        confirmPassword: "",
       },
       CreateCategoryRequest: {
         name: "",
@@ -44,7 +60,7 @@ const doc = {
         startDate: "yyyy-mm-dd hh:mm:ss",
         endDate: "yyyy-mm-dd hh:mm:ss",
         location: {
-          region: "region id",
+          region: 3273,
           coordinates: [0, 0],
           address: "",
         },
@@ -68,11 +84,16 @@ const doc = {
         description: "Ticket Reguler - Description",
         quantity: 100,
       },
+      CreateOrderRequest: {
+        events: "68171dca8f08aec98371e509",
+        ticket: "6817339df68f045b5e493b9f",
+        quantity: 1,
+      },
     },
   },
 };
 
 const outputFile = "./swagger_output.json";
-const endpointsFile = ["../routes/api.ts"];
+const endpointsFiles = ["../routes/api.ts"];
 
-swaggerAutogen({ openapi: "3.0.0" })(outputFile, endpointsFile, doc);
+swaggerAutogen({ openapi: "3.0.0" })(outputFile, endpointsFiles, doc);

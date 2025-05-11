@@ -2,17 +2,17 @@
   "openapi": "3.0.0",
   "info": {
     "version": "v0.0.1",
-    "title": "Dokumentasi API Acara",
-    "description": "Dokumentasi API Acara"
+    "title": "Dokumentasi API ACARA",
+    "description": "Dokumentasi API ACARA"
   },
   "servers": [
     {
       "url": "http://localhost:3000/api",
-      "description": "Local server"
+      "description": "Local Server"
     },
     {
-      "url": "https://back-end-acara-jet-eight.vercel.app/api",
-      "description": "Deployed server"
+      "url": "https://back-end-acara.vercel.app/api",
+      "description": "Deploy Server"
     }
   ],
   "paths": {
@@ -1329,15 +1329,43 @@
         "properties": {
           "identifier": {
             "type": "string",
-            "example": "rizki2025category3"
+            "example": "agung2025"
           },
           "password": {
             "type": "string",
-            "example": "abcde2025"
+            "example": "Agung2025!"
           }
         },
         "xml": {
           "name": "LoginRequest"
+        }
+      },
+      "RegisterRequest": {
+        "type": "object",
+        "properties": {
+          "fullName": {
+            "type": "string",
+            "example": "member2025"
+          },
+          "username": {
+            "type": "string",
+            "example": "member2025"
+          },
+          "email": {
+            "type": "string",
+            "example": "member2025@yopmail.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "Member2025!"
+          },
+          "confirmPassword": {
+            "type": "string",
+            "example": "Member2025!"
+          }
+        },
+        "xml": {
+          "name": "RegisterRequest"
         }
       },
       "ActivationRequest": {
@@ -1350,6 +1378,42 @@
         },
         "xml": {
           "name": "ActivationRequest"
+        }
+      },
+      "UpdateProfileRequest": {
+        "type": "object",
+        "properties": {
+          "fullName": {
+            "type": "string",
+            "example": ""
+          },
+          "profilePicture": {
+            "type": "string",
+            "example": ""
+          }
+        },
+        "xml": {
+          "name": "UpdateProfileRequest"
+        }
+      },
+      "UpdatePasswordRequest": {
+        "type": "object",
+        "properties": {
+          "oldPassword": {
+            "type": "string",
+            "example": ""
+          },
+          "password": {
+            "type": "string",
+            "example": ""
+          },
+          "confirmPassword": {
+            "type": "string",
+            "example": ""
+          }
+        },
+        "xml": {
+          "name": "UpdatePasswordRequest"
         }
       },
       "CreateCategoryRequest": {
@@ -1403,8 +1467,8 @@
             "type": "object",
             "properties": {
               "region": {
-                "type": "string",
-                "example": "region id"
+                "type": "number",
+                "example": 3273
               },
               "coordinates": {
                 "type": "array",
@@ -1497,6 +1561,26 @@
         },
         "xml": {
           "name": "CreateTicketRequest"
+        }
+      },
+      "CreateOrderRequest": {
+        "type": "object",
+        "properties": {
+          "events": {
+            "type": "string",
+            "example": "68171dca8f08aec98371e509"
+          },
+          "ticket": {
+            "type": "string",
+            "example": "6817339df68f045b5e493b9f"
+          },
+          "quantity": {
+            "type": "number",
+            "example": 1
+          }
+        },
+        "xml": {
+          "name": "CreateOrderRequest"
         }
       }
     }
