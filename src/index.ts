@@ -14,7 +14,12 @@ async function init() {
     const PORT = 3000;
     const app = express();
 
-    app.use(cors());
+    app.use(
+      cors({
+        origin: "http://localhost:3001", // ganti dengan frontend kamu
+        credentials: true, // kalau kamu kirim cookie atau Authorization
+      })
+    );
 
     app.use(bodyParser.json());
 
