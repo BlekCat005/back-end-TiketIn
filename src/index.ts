@@ -15,10 +15,21 @@ async function init() {
     const PORT = 3000;
     const app = express();
 
+    const allowedOrigins = [
+      "http://localhost:3001",
+      "https://front-end-acara-green-seven.vercel.app/", // ganti dengan URL frontend yang benar
+    ];
+
     app.use(
       cors({
-        origin: "http://localhost:3001", // ganti dengan frontend kamu
-        credentials: true, // kalau kamu kirim cookie atau Authorization
+        origin: (origin, callback) => {
+          if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+          } else {
+            callback(new Error("Not allowed by CORS"));
+          }
+        },
+        credentials: true,
       })
     );
 
