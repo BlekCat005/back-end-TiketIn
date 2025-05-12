@@ -1,59 +1,75 @@
 import { Request, Response } from "express";
 import * as Yup from "yup";
-import UserModel from "../models/user.model";
+
+import UserModel, {
+  userDTO,
+  userLoginDTO,
+  userUpdatePasswordDTO,
+} from "../models/user.model";
 import { encrypt } from "../utils/encryption";
 import { generateToken } from "../utils/jwt";
-import { ROLES } from "../utils/constant";
 import { IReqUser } from "../utils/interfaces";
 import response from "../utils/response";
 
-type TRegister = {
-  fullName: string;
-  userName: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-};
-
-type TLogin = {
-  identifier: string;
-  password: string;
-};
-
-const regiterValidatorSchema = Yup.object({
-  fullName: Yup.string().required(),
-  userName: Yup.string().required(),
-  email: Yup.string().email().required(),
-  password: Yup.string()
-    .required()
-    .min(8, "Password must be at least 8 characters")
-    .test(
-      "at least one number",
-      "Password must contain at least one number",
-      (value) => {
-        if (!value) return false;
-
-        const regex = /(?=.*\d)/;
-        return regex.test(value);
-      }
-    ),
-  confirmPassword: Yup.string()
-    .required()
-    .min(8)
-    .oneOf([Yup.ref("password")], "Password does not match"),
-});
-
 export default {
+  async updateProfile(req: IReqUser, res: Response) {
+    try {
+      const userId = req.user?.id;
+      const { fullName, profilePicture } = req.body;
+      const result = await UserModel.findByIdAndUpdate(
+        userId,
+        {
+          fullName,
+          profilePicture,
+        },
+        {
+          new: true,
+        }
+      );
+
+      if (!result) return response.notFound(res, "user not found");
+
+      response.success(res, result, "success to update profile");
+    } catch (error) {
+      response.error(res, error, "failed to update profile");
+    }
+  },
+  async updatePassword(req: IReqUser, res: Response) {
+    try {
+      const userId = req.user?.id;
+      const { oldPassword, password, confirmPassword } = req.body;
+
+      await userUpdatePasswordDTO.validate({
+        oldPassword,
+        password,
+        confirmPassword,
+      });
+
+      const user = await UserModel.findById(userId);
+
+      if (!user || user.password !== encrypt(oldPassword))
+        return response.notFound(res, "user not found");
+
+      const result = await UserModel.findByIdAndUpdate(
+        userId,
+        {
+          password: encrypt(password),
+        },
+        {
+          new: true,
+        }
+      );
+      response.success(res, result, "success to update password");
+    } catch (error) {
+      response.error(res, error, "failed to update password");
+    }
+  },
+
   async register(req: Request, res: Response) {
-    /**
-     #swagger.tags = ["Auth"]
-     swagger.tags = ["Auth"]
-     */
-    const { fullName, userName, email, password, confirmPassword } =
-      req.body as unknown as TRegister;
+    const { fullName, userName, email, password, confirmPassword } = req.body;
 
     try {
-      await regiterValidatorSchema.validate({
+      await userDTO.validate({
         fullName,
         userName,
         email,
@@ -63,38 +79,27 @@ export default {
 
       const result = await UserModel.create({
         fullName,
-        userName,
         email,
+        userName,
         password,
-        role: ROLES.MEMBER,
       });
 
-      response.success(res, result, "success Registration");
+      response.success(res, result, "success registration!");
     } catch (error) {
-      const err = error as unknown as Error;
       response.error(res, error, "failed registration");
     }
   },
 
   async login(req: Request, res: Response) {
-    /**
-     * #swagger.tags = ["Auth"]
-     #swagger.requestBody = {
-     required: true,
-     schema: {$ref: "#/components/schemas/LoginRequest"}
-     }
-     */
-    const { identifier, password } = req.body as unknown as TLogin;
     try {
+      const { identifier, password } = req.body;
+      await userLoginDTO.validate({
+        identifier,
+        password,
+      });
+
       const userByIdentifier = await UserModel.findOne({
-        $or: [
-          {
-            email: identifier,
-          },
-          {
-            userName: identifier,
-          },
-        ],
+        $or: [{ email: identifier }, { userName: identifier }],
         isActive: true,
       });
 
@@ -102,6 +107,7 @@ export default {
         return response.unauthorized(res, "user not found");
       }
 
+      // validasi password
       const validatePassword: boolean =
         encrypt(password) === userByIdentifier.password;
 
@@ -114,39 +120,24 @@ export default {
         role: userByIdentifier.role,
       });
 
-      response.success(res, token, "success login!");
+      response.success(res, token, "login success");
     } catch (error) {
-      const err = error as unknown as Error;
-      response.error(res, error, "login failed!");
+      response.error(res, error, "login failed");
     }
   },
 
   async me(req: IReqUser, res: Response) {
-    /**
-     * #swagger.tags = ["Auth"]
-     #swagger.security = [{
-     "bearerAuth": []
-     }]
-     */
     try {
       const user = req.user;
       const result = await UserModel.findById(user?.id);
 
-      response.success(res, result, "success get user!");
+      response.success(res, result, "success get user profile");
     } catch (error) {
-      const err = error as unknown as Error;
-      response.error(res, error, "get user failed!");
+      response.error(res, error, "failed get user profile");
     }
   },
 
   async activation(req: Request, res: Response) {
-    /**
-     * #swagger.tags = ["Auth"]
-     #swagger.requestBody = {
-     required: true,
-     schema: {$ref: "#/components/schemas/ActivationRequest"}
-     }
-     */
     try {
       const { code } = req.body as { code: string };
 
@@ -162,10 +153,9 @@ export default {
         }
       );
 
-      response.success(res, user, "user successfully activated!");
+      response.success(res, user, "user successfully activated");
     } catch (error) {
-      const err = error as unknown as Error;
-      response.error(res, error, "activation failed!");
+      response.error(res, error, "user is failed activated");
     }
   },
 };
