@@ -11,8 +11,11 @@ import eventController from "../controllers/event.controller";
 import ticketController from "../controllers/ticket.controller";
 import bannerController from "../controllers/banner.controller";
 import orderController from "../controllers/order.controller";
+import webhookController from "../controllers/webhook.controller";
 
 const router = express.Router();
+
+router.post("/midtrans/webhook", webhookController.notificationHandler);
 
 router.post(
   "/auth/register",
