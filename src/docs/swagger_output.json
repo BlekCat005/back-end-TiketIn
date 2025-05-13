@@ -11,11 +11,47 @@
       "description": "Local Server"
     },
     {
-      "url": "https://back-end-acara.vercel.app/api",
+      "url": "https://back-end-tiket-in-sistem-informasi.vercel.app/api",
       "description": "Deploy Server"
     }
   ],
   "paths": {
+    "/midtrans/webhook": {
+      "post": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "order_id": {
+                    "example": "any"
+                  },
+                  "transaction_status": {
+                    "example": "any"
+                  },
+                  "fraud_status": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/auth/register": {
       "post": {
         "tags": [
