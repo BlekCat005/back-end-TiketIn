@@ -1,6 +1,6 @@
 import express from "express";
 import crypto from "crypto";
-import OrderModel from "../models/order.model";
+import OrderModel, { OrderStatus } from "../models/order.model";
 
 const router = express.Router();
 
@@ -26,9 +26,27 @@ router.post("/midtrans-notification", async (req, res) => {
       return res.status(403).json({ message: "Invalid signature" });
     }
 
+    const mapMidtransToOrderStatus = (
+      transactionStatus: string
+    ): OrderStatus => {
+      switch (transactionStatus) {
+        case "settlement":
+          return OrderStatus.COMPLETED;
+        case "cancel":
+        case "expire":
+        case "deny":
+          return OrderStatus.CANCELLED;
+        case "pending":
+        default:
+          return OrderStatus.PENDING;
+      }
+    };
+
+    const mappedStatus = mapMidtransToOrderStatus(transaction_status);
+
     const updatedOrder = await OrderModel.findOneAndUpdate(
       { orderId: order_id },
-      { status: transaction_status },
+      { status: mappedStatus },
       { new: true }
     );
 
